@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>History — Slotly</title>
+<meta name="description" content="Every URL you've shortened, with click counts and quick actions." />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/history.css" />
+</head>
+<body>
+<canvas id="app-canvas" class="app-canvas"></canvas>
+
+<div class="page-shell">
+<nav class="site-nav">
+<div class="site-nav-inner">
+<a href="index.html" class="brand">
+<span class="brand-mark">Sy</span>
+Slotly
+</a>
+<div class="nav-right">
+<div class="nav-links" id="nav-links">
+<a href="index.html">Shorten</a>
+<a href="history.html" class="active">History</a>
+<a href="about.html">How It Works</a>
+</div>
+<span class="nav-divider"></span>
+<a href="https://github.com/hell-codes/url-shortener" target="_blank" rel="noopener" class="source-link">Source</a>
+<button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+</div>
+</div>
+</nav>
+
+<main>
+<div class="container">
+<div class="history-header">
+<div>
+<h1>Your shortened URLs</h1>
+<p>Every link lives as one entry in the hash table, reloaded from JSON on every restart.</p>
+</div>
+<div class="history-stats">
+<div class="stat-box">
+<div class="value" id="stat-total">0</div>
+<div class="label">Links</div>
+</div>
+<div class="stat-box">
+<div class="value" id="stat-clicks">0</div>
+<div class="label">Clicks</div>
+</div>
+</div>
+</div>
+
+<div id="history-content">
+<div class="skeleton-list" id="history-loading">
+<div class="skeleton-card"></div>
+<div class="skeleton-card"></div>
+<div class="skeleton-card"></div>
+</div>
+</div>
+</div>
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<span class="footer-note">Slotly — a Data Structures capstone project</span>
+<div class="footer-links">
+<a href="about.html">How it works</a>
+<a href="index.html">Shorten a URL</a>
+</div>
+</div>
+</footer>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/history.js"></script>
+</body>
+</html>

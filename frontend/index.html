@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slotly — URL Shortening Service</title>
+<meta name="description" content="A URL shortening service built on a custom hash table with linear probing collision resolution." />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+<canvas id="app-canvas" class="app-canvas"></canvas>
+
+<div class="page-shell">
+<nav class="site-nav">
+<div class="site-nav-inner">
+<a href="index.html" class="brand">
+<span class="brand-mark">Sy</span>
+Slotly
+</a>
+<div class="nav-right">
+<div class="nav-links" id="nav-links">
+<a href="index.html" class="active">Shorten</a>
+<a href="history.html">History</a>
+<a href="about.html">How It Works</a>
+</div>
+<span class="nav-divider"></span>
+<a href="https://github.com/hell-codes/url-shortener" target="_blank" rel="noopener" class="source-link">Source</a>
+<button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+</div>
+</div>
+</nav>
+
+<main>
+<section class="hero">
+<div class="container hero-inner">
+<span class="pill"><span class="pill-dot"></span>Custom hash table · linear probing</span>
+<h1>Shorten a link the way a <span>hash table</span> would</h1>
+<p class="lead">Every short code lives in one slot of an array-backed hash table. Paste a long URL below and watch it get inserted, hashed, and — if needed — linearly probed into place.</p>
+
+<div class="shorten-panel">
+<form class="shorten-form" id="shorten-form">
+<div class="input-group">
+<input type="url" id="url-input" name="url" placeholder="https://example.com/a/very/long/path" required autocomplete="off" />
+</div>
+<button type="submit" class="btn btn-primary" id="submit-button">Shorten URL</button>
+</form>
+
+<div class="alias-row">
+<label class="alias-toggle">
+<input type="checkbox" id="alias-checkbox" />
+Use a custom alias
+</label>
+</div>
+<div class="alias-input-wrap" id="alias-wrap">
+<span>/</span>
+<input type="text" id="alias-input" placeholder="my-project" maxlength="40" />
+</div>
+
+<div class="form-error" id="form-error"></div>
+
+<div class="result-card" id="result-card">
+<button type="button" class="result-close" id="result-close" aria-label="Dismiss result">
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M5 5l10 10M15 5L5 15" stroke-linecap="round" />
+</svg>
+</button>
+<div class="result-badge">
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M4 10l4 4 8-8" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+URL shortened
+</div>
+<div class="result-url-row">
+<div class="result-url" id="result-url"></div>
+<div class="result-actions">
+<button class="btn btn-secondary btn-sm" id="copy-button">Copy</button>
+<button class="btn btn-ghost btn-sm" id="open-button">Open URL</button>
+</div>
+</div>
+<div class="result-meta">
+<span class="label">Original URL</span>
+<span class="value" id="result-original"></span>
+</div>
+<div class="result-timestamp" id="result-timestamp"></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<div class="section-heading">
+<h2>How a link gets stored</h2>
+<p>The insert path from a long URL to a slot in the hash table.</p>
+</div>
+<div class="flow-track">
+<div class="flow-step">
+<span class="index">01</span>
+<h3>Validate & generate</h3>
+<p>The URL is checked, then a short alphanumeric code is generated.</p>
+</div>
+<div class="flow-step">
+<span class="index">02</span>
+<h3>Hash the code</h3>
+<p>A hash function maps the code to a slot index in the table's array.</p>
+</div>
+<div class="flow-step">
+<span class="index">03</span>
+<h3>Linear probing</h3>
+<p>If that slot is taken, the table checks the next slot until one is free.</p>
+</div>
+<div class="flow-step">
+<span class="index">04</span>
+<h3>Persist & respond</h3>
+<p>The mapping is saved to JSON and the short URL returns instantly.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container">
+<div class="section-heading">
+<h2>Built for a Data Structures</h2>
+<p>Every part of the system is intentionally visible and explainable.</p>
+</div>
+<div class="feature-grid">
+<div class="feature-card">
+<div class="feature-icon">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6" rx="1.4"/><rect x="11" y="3" width="6" height="6" rx="1.4"/><rect x="3" y="11" width="6" height="6" rx="1.4"/><rect x="11" y="11" width="6" height="6" rx="1.4"/></svg>
+</div>
+<h3>Hash table from scratch</h3>
+<p>No built-in dictionary — the core mapping is a hand-written array-based table.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/></svg>
+</div>
+<h3>Live click tracking</h3>
+<p>Every redirect increments a persisted click counter for that short code.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h12M10 4l6 6-6 6"/></svg>
+</div>
+<h3>Instant redirects</h3>
+<p>Short links resolve through Flask and redirect to the original URL.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h12v12H4z"/><path d="M4 8h12"/></svg>
+</div>
+<h3>JSON persistence</h3>
+<p>Mappings survive backend restarts by reloading into the hash table on boot.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h3l2-6 4 12 2-6h3"/></svg>
+</div>
+<h3>Collision handling</h3>
+<p>Linear probing resolves collisions deterministically without overwriting data.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14"/></svg>
+</div>
+<h3>Full history</h3>
+<p>Browse, copy, reopen, and delete every short link you've created.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<span class="footer-note">Slotly — a Data Structures capstone project</span>
+<div class="footer-links">
+<a href="about.html">How it works</a>
+<a href="history.html">History</a>
+</div>
+</div>
+</footer>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/index.js"></script>
+</body>
+</html>

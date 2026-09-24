@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How It Works — Slotly</title>
+<meta name="description" content="An explanation of the custom hash table, hash function, and linear probing behind Slotly." />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/about.css" />
+</head>
+<body>
+<canvas id="app-canvas" class="app-canvas"></canvas>
+
+<div class="page-shell">
+<nav class="site-nav">
+<div class="site-nav-inner">
+<a href="index.html" class="brand">
+<span class="brand-mark">Sy</span>
+Slotly
+</a>
+<div class="nav-right">
+<div class="nav-links" id="nav-links">
+<a href="index.html">Shorten</a>
+<a href="history.html">History</a>
+<a href="about.html" class="active">How It Works</a>
+</div>
+<span class="nav-divider"></span>
+<a href="https://github.com/hell-codes/url-shortener" target="_blank" rel="noopener" class="source-link">Source</a>
+<button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+</div>
+</div>
+</nav>
+
+<main>
+<div class="container">
+<div class="about-header">
+<h1>How Slotly works</h1>
+<p>This page walks through every Data Structures concept behind the app/site.</p>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>URL shortening</h2>
+</div>
+<div class="about-block-body">
+<p>URL shortening maps a long, hard-to-share URL to a short alphanumeric code. When someone visits the short link, the server looks up the code and redirects to the original URL.</p>
+<p>The interesting engineering problem is not the redirect itself — it's how the mapping between "short code" and "original URL" is stored and looked up quickly, even as the number of links grows.</p>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>Why a hash table?</h2>
+</div>
+<div class="about-block-body">
+<p>A hash table gives average-case O(1) insert, search, and delete — exactly what a lookup-heavy service like this needs. Instead of scanning a list of every short code, the hash table jumps almost directly to the right slot.</p>
+<p>Slotly implements this hash table manually, using a plain array as backing storage, instead of relying on Python's built-in dictionary — so every step of hashing and collision handling is visible and explainable.</p>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>The hash function</h2>
+</div>
+<div class="about-block-body">
+<p>The hash function converts a short code's characters into a single integer, then reduces it into a valid array index using the modulus operator against the table's capacity.</p>
+<p class="mono hash-formula">index = (hash × 31 + charCode) % capacity, applied character by character</p>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>Collisions</h2>
+</div>
+<div class="about-block-body">
+<p>A collision happens when two different short codes hash to the same array index. Since the table has a fixed number of slots, this is unavoidable once enough entries are inserted — the table must resolve where the second code actually goes.</p>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>Linear probing</h2>
+</div>
+<div class="about-block-body">
+<p>When a slot is already occupied, linear probing checks the next slot, then the next, wrapping around the end of the array, until it finds an empty or deleted slot. Deletion marks a slot as a tombstone rather than clearing it, so later searches can still walk past it to find entries that were probed further along.</p>
+<div class="slot-strip" id="slot-strip"></div>
+<div class="probe-demo-controls">
+<button class="btn btn-secondary btn-sm" id="probe-demo-button">Insert three colliding keys</button>
+<button class="btn btn-ghost btn-sm" id="probe-demo-reset">Reset</button>
+</div>
+<div class="probe-demo-note" id="probe-demo-note"></div>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>Why linear probing?</h2>
+</div>
+<div class="about-block-body">
+<p>Linear probing was chosen over chaining because it keeps every entry inside one contiguous array — no extra linked lists or pointers — which makes the data structure easier to visualize, easier to persist to JSON, and easier to explain step by step.</p>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Concept</span>
+<h2>The two flows</h2>
+</div>
+<div class="about-block-body">
+<div class="flow-diagrams-row">
+<div>
+<h3 class="flow-diagram-title">Creating a short URL</h3>
+<div class="flow-diagram">
+<div class="flow-node">Long URL</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Generate short code</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Hash function</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Hash table slot</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Collision? → linear probing</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Store mapping + persist JSON</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Short URL returned</div>
+</div>
+</div>
+<div>
+<h3 class="flow-diagram-title">Resolving a short URL</h3>
+<div class="flow-diagram">
+<div class="flow-node">Short URL visited</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Extract short code</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Hash table search</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Original URL found</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">Click count incremented</div>
+<div class="flow-arrow">↓</div>
+<div class="flow-node">HTTP redirect</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Reference</span>
+<h2>Time complexity</h2>
+</div>
+<div class="about-block-body">
+<table class="complexity-table">
+<thead>
+<tr><th>Operation</th><th>Average case</th><th>Worst case</th></tr>
+</thead>
+<tbody>
+<tr><td class="op">Search</td><td class="value avg">O(1)</td><td class="value worst">O(n)</td></tr>
+<tr><td class="op">Insert</td><td class="value avg">O(1)</td><td class="value worst">O(n)</td></tr>
+<tr><td class="op">Delete</td><td class="value avg">O(1)</td><td class="value worst">O(n)</td></tr>
+</tbody>
+</table>
+<p class="complexity-note">The worst case happens when many keys collide and probing has to walk across a large stretch of the array — this is why the table resizes itself once it gets too full.</p>
+</div>
+</div>
+
+<div class="about-block">
+<div class="about-block-label">
+<span>Q&A</span>
+<h2>FYQ</h2>
+</div>
+<div class="about-block-body">
+<div class="viva-list" id="viva-list">
+<div class="viva-item">
+<button class="viva-question">What is a hash table? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>A data structure that maps keys to values using a hash function to compute an index into an array, giving fast average-case lookups.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">Why did you choose a hash table for this project? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>URL shortening is a lookup-heavy workload — the hash table's average O(1) search makes redirects fast even as the number of stored links grows.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">What is a hash function? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>A function that converts a key into a numeric index, in this case by combining character codes with a multiplier and reducing with modulus against the table capacity.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">What is a collision? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>When two different keys hash to the same index. The table must have a strategy to still store and retrieve both.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">What is linear probing? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>A collision resolution technique that checks the next array slot in sequence, wrapping around the array, until it finds an open slot.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">Why linear probing over chaining? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>Linear probing keeps all data inside one array with no extra pointer structures, which is simpler to implement, persist, and explain.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">What does O(1) mean here? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>It means the operation typically takes constant time regardless of how many entries are stored, assuming few collisions.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">What is the worst-case complexity, and why? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>O(n), because a poorly distributed set of keys could force probing across most of the array before finding the right slot.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">Why not just use a Python dictionary? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>The project's goal is to demonstrate the internal mechanics of a hash table — hashing and collision handling — which a built-in dictionary would hide.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">How does deletion work without breaking future searches? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>Deleted slots are marked with a tombstone flag instead of being cleared, so a search can keep probing past them to reach entries stored further along the same chain.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">How does the redirect work? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>Flask receives a GET request for the short code, searches the hash table, increments the click counter, and issues an HTTP 302 redirect to the original URL.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">How is data persisted between restarts? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>Every insert, delete, and click update is written to a JSON file. On startup, Flask reads that file and rebuilds the hash table from it.</p></div>
+</div>
+<div class="viva-item">
+<button class="viva-question">Why keep the frontend and backend separate? <span class="chevron">⌄</span></button>
+<div class="viva-answer"><p>It mirrors a real REST architecture: the frontend is a static site that only talks to Flask through JSON APIs, so either side can be replaced or redeployed independently.</p></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<span class="footer-note">Slotly — a Data Structures capstone project</span>
+<div class="footer-links">
+<a href="index.html">Shorten a URL</a>
+<a href="history.html">History</a>
+</div>
+</div>
+</footer>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/about.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>404 — Short link not found — Slotly</title>
+<link rel="stylesheet" href="css/style.css" />
+<style>
+.not-found-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 18px;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+.not-found-code {
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 14vw, 7rem);
+  font-weight: 600;
+  background: linear-gradient(120deg, var(--accent-gold-strong), var(--accent-coral));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+.not-found-wrap h1 {
+  font-size: 1.4rem;
+}
+.not-found-wrap p {
+  max-width: 380px;
+}
+.not-found-slot {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: 999px;
+  padding: 6px 16px;
+}
+</style>
+</head>
+<body>
+<canvas id="app-canvas" class="app-canvas"></canvas>
+
+<div class="not-found-wrap">
+<span class="not-found-slot">slot lookup → empty</span>
+<div class="not-found-code">404</div>
+<h1>Short link not found</h1>
+<p>The URL you're looking for doesn't exist in the hash table — it may have been deleted or never created.</p>
+<a href="index.html" class="btn btn-primary">Back to home</a>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/canvas.js"></script>
+</body>
+</html>
