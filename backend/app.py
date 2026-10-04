@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-
-from routes.url_routes import url_blueprint
 from middleware.error_handler import register_error_handlers
+from routes.url_routes import url_blueprint
 
 
 def create_app():

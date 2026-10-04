@@ -35,10 +35,7 @@ def is_valid_url(candidate_url):
     if parsed.scheme not in ("http", "https"):
         return False
 
-    if not parsed.netloc:
-        return False
-
-    return True
+    return parsed.netloc
 
 
 def generate_short_code():

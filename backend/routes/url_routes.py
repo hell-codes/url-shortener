@@ -1,11 +1,10 @@
-from flask import Blueprint, jsonify, request, redirect
-
+from dsa.hash_table import HashTableFullError
+from flask import Blueprint, jsonify, redirect, request
 from services.url_service import (
-    url_service,
     DuplicateAliasError,
     InvalidURLError,
+    url_service,
 )
-from dsa.hash_table import HashTableFullError
 
 url_blueprint = Blueprint("url_blueprint", __name__)
 
